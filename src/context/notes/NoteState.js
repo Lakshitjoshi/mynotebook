@@ -33,18 +33,8 @@ const NoteState = (props)=>{
         },
         body: JSON.stringify({title,description,tag})
       }); 
-
-      console.log("note added");
-      const note ={
-        "_id": "65ddf512f9cbb44a47c9ad9d",
-        "user": "64eddfba520f3fe311a550ba4",
-        "title": title,
-        "description": description,
-        "tag": tag,
-        "date": "2024-02-27T14:43:30.042Z",
-        "__v": 0
-      };
-      setNotes(notes.concat(note));
+      const json = await response.json();
+      setNotes(notes.concat(json));
     }
 
     //Delete a note
@@ -57,8 +47,7 @@ const NoteState = (props)=>{
           "auth-token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRlZGRmYmE1MjBmM2ZlMzExYTU1MGJhIn0sImlhdCI6MTcwODk2NjY4Nn0.e0a7qJ5IycBDVV8WiyP2VTvFtvW0s2q6ntmMU1PlSdc"
         }
       });
-      const json = response.json(); 
-      console.log(json)
+      const json = await response.json(); 
       const newNotes = notes.filter((note)=>{
         return note._id!==id;
       })
@@ -76,17 +65,20 @@ const NoteState = (props)=>{
         },
         body: JSON.stringify({title,description,tag})
       });
-      const json = response.json(); 
-      console.log(json);
+      const json = await response.json(); 
+
+      let newNotes = JSON.parse(JSON.stringify(notes))
       // LOGIC TO EDIT IN CLIENT
-      for(let index =0;index< notes.length; index++){
-        const element = notes[index];
+      for(let index =0;index< newNotes.length; index++){
+        const element = newNotes[index];
         if(element._id===id){
-          element.title = title;
-          element.description=description;
-          element.tag=tag;
+          newNotes[index].title = title;
+          newNotes[index].description=description;
+          newNotes[index].tag=tag;
+          break;
         }
       }
+      setNotes(newNotes);
     }
 
     return(
